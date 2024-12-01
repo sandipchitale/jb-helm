@@ -159,7 +159,6 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
                             }
                         }
                     }
-                    TreeUtil.expandAll(helmTree);
                 } catch (ApiException | IOException ignore) {
                     Notification notification = new Notification("helmExplorerNotificationGroup",
                             "Could not Helm releases",
@@ -167,6 +166,8 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
                             NotificationType.ERROR);
                     notification.notify(project);
                 } finally {
+                    TreeUtil.expandAll(helmTree);
+                    ((DefaultTreeModel) helmTree.getModel()).nodeStructureChanged((DefaultMutableTreeNode) helmTree.getModel().getRoot());
                     helmTree.setPaintBusy(false);
                     getContent().setCursor(null);
                 }
