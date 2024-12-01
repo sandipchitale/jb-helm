@@ -12,12 +12,14 @@ import com.intellij.openapi.wm.ex.ToolWindowEx;
 import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.ui.tree.TreeUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
 import io.kubernetes.client.util.Config;
+import io.kubernetes.client.util.KubeConfig;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -25,13 +27,20 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
 public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
     private final Project project;
     private final Tree helmTree;
+
+    static record ContextNode(String name, Object context, boolean current) {
+    }
 
     static record NamespaceNode(V1Namespace namespace, String name) {
     }
@@ -90,8 +99,39 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
                 helmTree.setPaintBusy(true);
                 Objects.requireNonNull(getContent()).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 try {
-                    ApiClient client = Config.defaultClient();
-                    Configuration.setDefaultApiClient(client);
+                    try {
+                        KubeConfig kubeConfig = KubeConfig.loadKubeConfig(
+                                new FileReader(
+                                        Path.of(System.getProperty("user.home"),
+                                                KubeConfig.KUBEDIR,
+                                                KubeConfig.KUBECONFIG).toFile()));
+                        String currentContextName = kubeConfig.getCurrentContext();
+                        DefaultMutableTreeNode currentContextNode = null;
+                        ArrayList<Object> contexts = kubeConfig.getContexts();
+                        for (Object context : contexts) {
+                            if (context instanceof Map<?, ?> contextMap) {
+                                Object nameObject = contextMap.get("name");
+                                if (nameObject instanceof String name) {
+                                    DefaultMutableTreeNode contextNode =
+                                            new DefaultMutableTreeNode(new ContextNode(name,
+                                                    contextMap.get("context"),
+                                                    currentContextName.equals(name)));
+                                    if (currentContextName.equals(name)) {
+                                        currentContextNode = contextNode;
+                                    }
+                                    rootDefaultMutableTreeNode.add(contextNode);
+                                }
+                            }
+                        }
+                        if (currentContextNode != null) {
+                            rootDefaultMutableTreeNode = currentContextNode;
+                        }
+                    } catch (Exception ignore) {
+                        // Oh well
+                    }
+
+                    ApiClient apiClient = Config.defaultClient();
+                    Configuration.setDefaultApiClient(apiClient);
                     CoreV1Api api = new CoreV1Api();
                     // Get the list of namespaces
                     V1NamespaceList namespaceList = api.listNamespace().execute();
@@ -116,6 +156,7 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
                             }
                         }
                     }
+                    TreeUtil.expandAll(helmTree);
                 } catch (ApiException | IOException ignore) {
                     Notification notification = new Notification("helmExplorerNotificationGroup",
                             "Could not Helm releases",
@@ -140,6 +181,9 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
                 if (userObject instanceof String text) {
                     append(text);
                     setIcon(HelmIcons.helmExplorerIcon);
+                } else if (userObject instanceof ContextNode contextNode) {
+                    append(contextNode.name());
+                    setIcon(AllIcons.Actions.GroupByClass);
                 } else if (userObject instanceof NamespaceNode namespaceNode) {
                     append(namespaceNode.name());
                     setIcon(AllIcons.Actions.GroupByModuleGroup);

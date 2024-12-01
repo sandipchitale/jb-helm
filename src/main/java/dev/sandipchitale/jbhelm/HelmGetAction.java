@@ -3,14 +3,12 @@ package dev.sandipchitale.jbhelm;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class HelmGetAction extends AnAction {
-    private HelmExplorerToolWindow helmExplorerToolWindow;
+public class HelmGetAction extends HelmExplorerAbstractAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
@@ -47,7 +45,4 @@ public class HelmGetAction extends AnAction {
         return ActionUpdateThread.EDT;
     }
 
-    public void setHelmExplorerToolWindow(HelmExplorerToolWindow helmExplorerToolWindow) {
-        this.helmExplorerToolWindow = helmExplorerToolWindow;
-    }
 }
