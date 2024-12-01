@@ -47,7 +47,7 @@
         </action>
         <action id="HelmGet" class="dev.sandipchitale.jbhelm.HelmGetAction"
                 description="Helm get"
-                icon="AllIcons.Actions.TraceInto">
+                icon="AllIcons.Actions.PreviewDetails">
         </action>
     </actions>
 </idea-plugin>
