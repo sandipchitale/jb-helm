@@ -45,7 +45,7 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
     static record NamespaceNode(V1Namespace namespace, String name) {
     }
 
-    static record SecretNode(V1Secret secret, String release, String revision) {
+    static record SecretNode(V1Secret secret, String namespace, String release, String revision) {
     }
 
     public HelmExplorerToolWindow(Project project) {
@@ -149,7 +149,10 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
                                     Matcher matcher = Constants.helmSecretNamePattern.matcher(Objects.requireNonNull(secretMetadata.getName()));
                                     if (matcher.matches()) {
                                         DefaultMutableTreeNode secretDefaultMutableTreeNode =
-                                                new DefaultMutableTreeNode(new SecretNode(secret, matcher.group(1), matcher.group(2)));
+                                                new DefaultMutableTreeNode(new SecretNode(secret,
+                                                        secretMetadata.getNamespace(),
+                                                        matcher.group(1),
+                                                        matcher.group(2)));
                                         namespaceDefaultMutableTreeNode.add(secretDefaultMutableTreeNode);
                                     }
                                 }
