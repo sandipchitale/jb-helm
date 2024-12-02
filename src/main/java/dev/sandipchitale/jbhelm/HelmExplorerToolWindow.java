@@ -175,8 +175,7 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
                         // Oh well
                     }
 
-                    ApiClient apiClient = Config.defaultClient();
-                    Configuration.setDefaultApiClient(apiClient);
+                    ApiClient apiClient = HelmReleaseRevisionSecretsAccessor.apiClient;
                     CoreV1Api api = new CoreV1Api();
                     // Get the list of namespaces
                     V1NamespaceList namespaceList = api.listNamespace().execute();
@@ -204,7 +203,7 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
                             }
                         }
                     }
-                } catch (ApiException | IOException ignore) {
+                } catch (ApiException ignore) {
                     Notification notification = new Notification("helmExplorerNotificationGroup",
                             "Could not Helm releases",
                             "Could not get information about Helm releases from Kubernetes cluster.",
