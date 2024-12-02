@@ -82,6 +82,7 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
 
         JPopupMenu helmReleasesPopupMenu = new JPopupMenu();
         JMenuItem helmReleasesHelmGetMenuItem = new JMenuItem("Helm get...");
+        helmReleasesHelmGetMenuItem.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         helmReleasesHelmGetMenuItem.addActionListener((ActionEvent actionEvent) -> {
             actionManager.tryToExecute(
                     helmGetAction,
@@ -94,6 +95,7 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
         helmReleasesPopupMenu.add(helmReleasesHelmGetMenuItem);
 
         JMenuItem helmReleasesHelmDiffMenuItem = new JMenuItem("Helm diff with...");
+        helmReleasesHelmDiffMenuItem.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         helmReleasesHelmDiffMenuItem.addActionListener((ActionEvent actionEvent) -> {
             actionManager.tryToExecute(
                     helmDiffAction,
