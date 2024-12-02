@@ -67,5 +67,9 @@
                 description="Helm get"
                 icon="AllIcons.Actions.PreviewDetails">
         </action>
+        <action id="HelmDiff" class="dev.sandipchitale.jbhelm.HelmDiffAction"
+                description="Helm diff"
+                icon="AllIcons.Actions.Diff">
+        </action>
     </actions>
 </idea-plugin>

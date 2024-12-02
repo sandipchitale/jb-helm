@@ -80,10 +80,11 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
         HelmGetAction helmGetAction = (HelmGetAction) actionManager.getAction("HelmGet");
         helmGetAction.setHelmExplorerToolWindow(this);
 
+        HelmDiffAction helmDiffAction = (HelmDiffAction) actionManager.getAction("HelmDiff");
+
         RefreshHelmExplorerAction refreshHelmExplorerAction = (RefreshHelmExplorerAction) actionManager.getAction("RefreshHelmExplorer");
         refreshHelmExplorerAction.setHelmExplorerToolWindow(this);
-        Objects.requireNonNull(helmExplorer).setTitleActions(java.util.List.of(helmGetAction, refreshHelmExplorerAction));
-
+        Objects.requireNonNull(helmExplorer).setTitleActions(java.util.List.of(helmGetAction, helmDiffAction, refreshHelmExplorerAction));
 
         JPopupMenu helmReleasesPopupMenu = new JPopupMenu();
         JMenuItem helmReleasesHelmGetMenuItem = new JMenuItem("Helm get...");
