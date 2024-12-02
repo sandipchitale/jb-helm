@@ -5,19 +5,15 @@ import com.intellij.diff.DiffManager;
 import com.intellij.diff.contents.DiffContent;
 import com.intellij.diff.requests.SimpleDiffRequest;
 import com.intellij.diff.util.DiffUserDataKeys;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.fileEditor.impl.EditorWindow;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.PlainTextFileType;
-import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.components.JBList;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +48,7 @@ public class HelmDiffAction extends HelmExplorerAbstractAction {
         Set<NamespaceSecretReleaseRevision> namespaceStringStringNamespaceSecretReleaseRevisionSet =
                 HelmReleaseRevisionSecretsAccessor.getNamespaceSecretReleaseRevisionSetAllNamespaces();
         DefaultMutableTreeNode selectedNode = helmExplorerToolWindow.getSelectedNode();
-        if ("Helm Explorer".equals(e.getPlace()) &&selectedNode != null) {
+        if ("Helm Explorer".equals(e.getPlace()) && selectedNode != null) {
             Object userObject = selectedNode.getUserObject();
             if (userObject instanceof HelmExplorerToolWindow.SecretNode secretNode) {
                 NamespaceSecretReleaseRevision namespaceSecretReleaseRevision = new NamespaceSecretReleaseRevision(
@@ -107,7 +103,7 @@ public class HelmDiffAction extends HelmExplorerAbstractAction {
         ListSelectionListener adjustOkActionState = e1 -> {
             builder.setOkActionEnabled(
                     namespaceSecretReleaseRevisionList1.getSelectedValue() != null
-                    && namespaceSecretReleaseRevisionList2.getSelectedValue() != null);
+                            && namespaceSecretReleaseRevisionList2.getSelectedValue() != null);
         };
 
         try {
@@ -141,14 +137,6 @@ public class HelmDiffAction extends HelmExplorerAbstractAction {
 
         HelmReleaseRevisionAccessor helmReleaseRevisionAccessor2 = new HelmReleaseRevisionAccessor(namespaceSecretStringStringNamespaceSecretReleaseRevision2);
         String title2 = helmReleaseRevisionAccessor2.getTitle();
-
-        // Sacrificial file
-        LightVirtualFile sacrificeVirtualFile = new LightVirtualFile("_",
-                PlainTextFileType.INSTANCE,
-                "");
-        sacrificeVirtualFile.setWritable(false);
-        sacrificeVirtualFile.setLanguage(PlainTextLanguage.INSTANCE);
-        fileEditorManager.openFile(sacrificeVirtualFile, true);
 
         EditorWindow currentWindow = fileEditorManager.getCurrentWindow();
         fileEditorManager.createSplitter(JSplitPane.VERTICAL_SPLIT, currentWindow);
@@ -287,9 +275,6 @@ public class HelmDiffAction extends HelmExplorerAbstractAction {
                     Constants.NOTES + title2);
             diffManager.showDiff(project, notesDiffRequest);
         }
-
-        fileEditorManager.closeFile(sacrificeVirtualFile);
-
     }
 
 
