@@ -65,13 +65,6 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
 
         helmTree.getSelectionModel().setSelectionMode(DefaultTreeSelectionModel.SINGLE_TREE_SELECTION);
 
-        helmTree.addTreeSelectionListener(tse -> {
-            Object lastPathComponent = tse.getPath().getLastPathComponent();
-            if (lastPathComponent instanceof DefaultMutableTreeNode defaultMutableTreeNode) {
-                Object userObject = defaultMutableTreeNode.getUserObject();
-            }
-        });
-
         setContent(ScrollPaneFactory.createScrollPane(helmTree));
 
         final ActionManager actionManager = ActionManager.getInstance();
@@ -81,6 +74,7 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
         helmGetAction.setHelmExplorerToolWindow(this);
 
         HelmDiffAction helmDiffAction = (HelmDiffAction) actionManager.getAction("HelmDiff");
+        helmDiffAction.setHelmExplorerToolWindow(this);
 
         RefreshHelmExplorerAction refreshHelmExplorerAction = (RefreshHelmExplorerAction) actionManager.getAction("RefreshHelmExplorer");
         refreshHelmExplorerAction.setHelmExplorerToolWindow(this);
@@ -98,6 +92,18 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
             );
         });
         helmReleasesPopupMenu.add(helmReleasesHelmGetMenuItem);
+
+        JMenuItem helmReleasesHelmDiffMenuItem = new JMenuItem("Helm diff with...");
+        helmReleasesHelmDiffMenuItem.addActionListener((ActionEvent actionEvent) -> {
+            actionManager.tryToExecute(
+                    helmDiffAction,
+                    null,
+                    helmTree,
+                    "Helm Explorer",
+                    true
+            );
+        });
+        helmReleasesPopupMenu.add(helmReleasesHelmDiffMenuItem);
 
         helmTree.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent mouseEvent) {

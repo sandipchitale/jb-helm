@@ -23,10 +23,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.util.Set;
 
-public class HelmDiffAction extends AnAction {
+public class HelmDiffAction extends HelmExplorerAbstractAction {
     private final WhatPanel whatPanel = WhatPanel.build();
 
     private final JBList<NamespaceSecretReleaseRevision> namespaceSecretReleaseRevisionList1 = new JBList<>();
@@ -50,8 +51,24 @@ public class HelmDiffAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         Set<NamespaceSecretReleaseRevision> namespaceStringStringNamespaceSecretReleaseRevisionSet =
                 HelmReleaseRevisionSecretsAccessor.getNamespaceSecretReleaseRevisionSetAllNamespaces();
-
-        namespaceSecretReleaseRevisionList1.setListData(namespaceStringStringNamespaceSecretReleaseRevisionSet.toArray(new NamespaceSecretReleaseRevision[0]));
+        DefaultMutableTreeNode selectedNode = helmExplorerToolWindow.getSelectedNode();
+        if ("Helm Explorer".equals(e.getPlace()) &&selectedNode != null) {
+            Object userObject = selectedNode.getUserObject();
+            if (userObject instanceof HelmExplorerToolWindow.SecretNode secretNode) {
+                NamespaceSecretReleaseRevision namespaceSecretReleaseRevision = new NamespaceSecretReleaseRevision(
+                        secretNode.namespace(),
+                        secretNode.secret(),
+                        secretNode.release(),
+                        secretNode.revision()
+                );
+                namespaceSecretReleaseRevisionList1.setListData(new NamespaceSecretReleaseRevision[]{namespaceSecretReleaseRevision});
+                namespaceSecretReleaseRevisionList1.setSelectedIndex(0);
+            } else {
+                namespaceSecretReleaseRevisionList1.setListData(namespaceStringStringNamespaceSecretReleaseRevisionSet.toArray(new NamespaceSecretReleaseRevision[0]));
+            }
+        } else {
+            namespaceSecretReleaseRevisionList1.setListData(namespaceStringStringNamespaceSecretReleaseRevisionSet.toArray(new NamespaceSecretReleaseRevision[0]));
+        }
         namespaceSecretReleaseRevisionList2.setListData(namespaceStringStringNamespaceSecretReleaseRevisionSet.toArray(new NamespaceSecretReleaseRevision[0]));
 
         DialogBuilder builder = new DialogBuilder(e.getProject());
