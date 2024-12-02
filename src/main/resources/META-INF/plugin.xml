@@ -25,12 +25,14 @@
         <h2>New Features</h2>
         <ul>
             <li>Explore Helm release/revisions</li>
-            <li>Helm Get command</li>
+            <li>Helm Get action</li>
+            <li>Helm Diff action</li>
         </ul>
         <h2>Features</h2>
         <ul>
             <li>Explore Helm release/revisions</li>
-            <li>Helm Get command</li>
+            <li>Helm Get action</li>
+            <li>Helm Diff action</li>
         </ul>
         <h2>Known Issues</h2>
         <ul>
