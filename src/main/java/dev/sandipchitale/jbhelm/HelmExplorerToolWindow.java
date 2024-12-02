@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
@@ -27,6 +28,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -79,6 +83,46 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
         RefreshHelmExplorerAction refreshHelmExplorerAction = (RefreshHelmExplorerAction) actionManager.getAction("RefreshHelmExplorer");
         refreshHelmExplorerAction.setHelmExplorerToolWindow(this);
         Objects.requireNonNull(helmExplorer).setTitleActions(java.util.List.of(helmGetAction, refreshHelmExplorerAction));
+
+
+        JPopupMenu helmReleasesPopupMenu = new JPopupMenu();
+        JMenuItem helmReleasesHelmGetMenuItem = new JMenuItem("Helm get...");
+        helmReleasesHelmGetMenuItem.addActionListener((ActionEvent actionEvent) -> {
+            actionManager.tryToExecute(
+                    helmGetAction,
+                    null,
+                    helmTree,
+                    "Helm Explorer",
+                    true
+            );
+        });
+        helmReleasesPopupMenu.add(helmReleasesHelmGetMenuItem);
+
+        helmTree.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
+                showPopup(mouseEvent);
+            }
+
+            public void mouseReleased(MouseEvent mouseEvent) {
+                showPopup(mouseEvent);
+            }
+
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    Tree helmTree = (Tree) e.getSource();
+                    TreePath closestPathForLocation = helmTree.getClosestPathForLocation(e.getPoint().x, e.getPoint().y);
+                    if (closestPathForLocation != null) {
+                        Object lastPathComponent = closestPathForLocation.getLastPathComponent();
+                        if (lastPathComponent instanceof DefaultMutableTreeNode defaultMutableTreeNode) {
+                            Object userObject = defaultMutableTreeNode.getUserObject();
+                            if (userObject instanceof SecretNode secretNode) {
+                                helmReleasesPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         loadHelmTree();
     }
