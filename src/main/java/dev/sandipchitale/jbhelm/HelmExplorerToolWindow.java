@@ -4,7 +4,6 @@ import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
@@ -16,10 +15,8 @@ import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
-import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
 
 import javax.swing.*;
@@ -32,7 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
@@ -73,15 +69,18 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
         HelmGetAction helmGetAction = (HelmGetAction) actionManager.getAction("HelmGet");
         helmGetAction.setHelmExplorerToolWindow(this);
 
+        HelmHistoryAction helmHistoryAction = (HelmHistoryAction) actionManager.getAction("HelmHistory");
+        helmHistoryAction.setHelmExplorerToolWindow(this);
+
         HelmDiffAction helmDiffAction = (HelmDiffAction) actionManager.getAction("HelmDiff");
         helmDiffAction.setHelmExplorerToolWindow(this);
 
         RefreshHelmExplorerAction refreshHelmExplorerAction = (RefreshHelmExplorerAction) actionManager.getAction("RefreshHelmExplorer");
         refreshHelmExplorerAction.setHelmExplorerToolWindow(this);
-        Objects.requireNonNull(helmExplorer).setTitleActions(java.util.List.of(helmGetAction, helmDiffAction, refreshHelmExplorerAction));
+        Objects.requireNonNull(helmExplorer).setTitleActions(java.util.List.of(helmGetAction, helmHistoryAction, helmDiffAction, refreshHelmExplorerAction));
 
         JPopupMenu helmReleasesPopupMenu = new JPopupMenu();
-        JMenuItem helmReleasesHelmGetMenuItem = new JMenuItem("Helm get...");
+        JMenuItem helmReleasesHelmGetMenuItem = new JMenuItem("Helm Get...");
         helmReleasesHelmGetMenuItem.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         helmReleasesHelmGetMenuItem.addActionListener((ActionEvent actionEvent) -> {
             actionManager.tryToExecute(
@@ -94,7 +93,25 @@ public class HelmExplorerToolWindow extends SimpleToolWindowPanel {
         });
         helmReleasesPopupMenu.add(helmReleasesHelmGetMenuItem);
 
-        JMenuItem helmReleasesHelmDiffMenuItem = new JMenuItem("Helm diff with...");
+        JMenuItem helmReleasesHelmHistoryMenuItem = new JMenuItem("Helm History...");
+        helmReleasesHelmHistoryMenuItem.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        helmReleasesHelmHistoryMenuItem.addActionListener((ActionEvent actionEvent) -> {
+            DefaultMutableTreeNode selectedNode = getSelectedNode();
+            Object userObject = selectedNode.getUserObject();
+            if (userObject instanceof SecretNode secretNode) {
+                actionManager.tryToExecute(
+                        helmHistoryAction,
+                        null,
+                        helmTree,
+                        "Helm Explorer",
+                        true
+                );
+            }
+
+        });
+        helmReleasesPopupMenu.add(helmReleasesHelmHistoryMenuItem);
+
+        JMenuItem helmReleasesHelmDiffMenuItem = new JMenuItem("Helm Diff with...");
         helmReleasesHelmDiffMenuItem.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         helmReleasesHelmDiffMenuItem.addActionListener((ActionEvent actionEvent) -> {
             actionManager.tryToExecute(

@@ -20,6 +20,7 @@
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends optional="true" config-file="sh-terminal.xml">org.jetbrains.plugins.terminal</depends>
 
     <change-notes><![CDATA[
         <h2>New Features</h2>
@@ -66,11 +67,18 @@
                 icon="AllIcons.Actions.Refresh">
         </action>
         <action id="HelmGet" class="dev.sandipchitale.jbhelm.HelmGetAction"
+                text="Helm Get..."
                 description="Helm get"
                 icon="AllIcons.Actions.PreviewDetails">
         </action>
+        <action id="HelmHistory" class="dev.sandipchitale.jbhelm.HelmHistoryAction"
+                text="Helm History..."
+                description="Helm history"
+                icon="AllIcons.Vcs.History">
+        </action>
         <action id="HelmDiff" class="dev.sandipchitale.jbhelm.HelmDiffAction"
-                description="Helm diff"
+                text="Helm Diff..."
+                description="Helm diff..."
                 icon="AllIcons.Actions.Diff">
         </action>
     </actions>
