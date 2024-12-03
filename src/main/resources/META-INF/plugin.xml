@@ -25,9 +25,7 @@
     <change-notes><![CDATA[
         <h2>New Features</h2>
         <ul>
-            <li>Explore Helm release/revisions</li>
-            <li>Helm Get action</li>
-            <li>Helm Diff action</li>
+            <li>Helm History action</li>
         </ul>
         <h2>Features</h2>
         <ul>
