@@ -21,7 +21,7 @@ public class HelmHistoryAction extends HelmExplorerAbstractAction {
             Object userObject = selectedNode.getUserObject();
             if (userObject instanceof HelmExplorerToolWindow.SecretNode secretNode) {
                 @NotNull ShellTerminalWidget shellTerminalWidget =
-                        TerminalToolWindowManager.getInstance(Objects.requireNonNull(project)).createLocalShellWidget(project.getBasePath(), "repl", true, true);
+                        TerminalToolWindowManager.getInstance(Objects.requireNonNull(project)).createLocalShellWidget(project.getBasePath(), "helm history", true, true);
                 try {
                     shellTerminalWidget.executeCommand(String.format("helm history -n %s %s", secretNode.namespace(), secretNode.release()));
                 } catch (IOException ignore) {
