@@ -15,8 +15,8 @@ import java.util.Objects;
 
 public class Utils {
     static void showReleaseRevision(Project project,
-                                            NamespaceSecretReleaseRevision namespaceSecretStringStringNamespaceSecretReleaseRevision,
-                                            WhatPanel whatPanel) {
+                                    NamespaceSecretReleaseRevision namespaceSecretStringStringNamespaceSecretReleaseRevision,
+                                    WhatPanel whatPanel) {
         FileEditorManagerEx fileEditorManager = (FileEditorManagerEx) FileEditorManager.getInstance(project);
 
         EditorWindow currentWindow = fileEditorManager.getCurrentWindow();

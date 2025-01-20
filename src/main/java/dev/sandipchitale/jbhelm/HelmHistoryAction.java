@@ -3,12 +3,11 @@ package dev.sandipchitale.jbhelm;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.terminal.ui.TerminalWidget;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.terminal.ShellTerminalWidget;
 import org.jetbrains.plugins.terminal.TerminalToolWindowManager;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.io.IOException;
 import java.util.Objects;
 
 public class HelmHistoryAction extends HelmExplorerAbstractAction {
@@ -20,12 +19,9 @@ public class HelmHistoryAction extends HelmExplorerAbstractAction {
         if (selectedNode != null) {
             Object userObject = selectedNode.getUserObject();
             if (userObject instanceof HelmExplorerToolWindow.SecretNode secretNode) {
-                @NotNull ShellTerminalWidget shellTerminalWidget =
-                        TerminalToolWindowManager.getInstance(Objects.requireNonNull(project)).createLocalShellWidget(project.getBasePath(), "helm history", true, true);
-                try {
-                    shellTerminalWidget.executeCommand(String.format("helm history -n %s %s", secretNode.namespace(), secretNode.release()));
-                } catch (IOException ignore) {
-                }
+                @NotNull TerminalWidget terminalWidget =
+                        TerminalToolWindowManager.getInstance(Objects.requireNonNull(project)).createShellWidget(project.getBasePath(), "helm history", true, true);
+                terminalWidget.sendCommandToExecute(String.format("helm history -n %s %s", secretNode.namespace(), secretNode.release()));
             }
         }
     }

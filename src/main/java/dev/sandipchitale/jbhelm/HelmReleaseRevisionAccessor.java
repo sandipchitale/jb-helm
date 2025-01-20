@@ -21,12 +21,12 @@ public class HelmReleaseRevisionAccessor {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private JsonNode releaseJsonNode;
-    private String chartInfo ;
-    private String values ;
-    private String templates ;
-    private String manifests ;
-    private String hooks ;
-    private String notes ;
+    private String chartInfo;
+    private String values;
+    private String templates;
+    private String manifests;
+    private String hooks;
+    private String notes;
 
     public HelmReleaseRevisionAccessor(NamespaceSecretReleaseRevision namespaceSecretReleaseRevision) {
         this.namespaceSecretReleaseRevision = namespaceSecretReleaseRevision;
@@ -40,7 +40,7 @@ public class HelmReleaseRevisionAccessor {
         if (releaseJsonNode == null) {
             V1Secret v1Secret = namespaceSecretReleaseRevision.v1Secret();
             byte[] decodedRelease = null;
-                decodedRelease = v1Secret.getData().get("release");
+            decodedRelease = v1Secret.getData().get("release");
             decodedRelease = Base64Coder.decode(new String(decodedRelease, StandardCharsets.UTF_8));
             try {
                 GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(decodedRelease));
@@ -78,7 +78,7 @@ public class HelmReleaseRevisionAccessor {
             try {
                 JsonNode releaseJsonNode = getReleaseJsonNode();
                 JsonNode valuesNode = releaseJsonNode.get("chart").get("values");
-                values  = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(valuesNode);
+                values = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(valuesNode);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

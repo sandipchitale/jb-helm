@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 
 public class WhatPanel extends BorderLayoutPanel {
 
-    private static final Border LEFT_BORDER = BorderFactory.createEmptyBorder(0, 20, 0 , 0);
+    private static final Border LEFT_BORDER = BorderFactory.createEmptyBorder(0, 20, 0, 0);
 
     private JCheckBox allCheckBox;
     private JCheckBox chartInfoCheckBox;
@@ -78,20 +78,41 @@ public class WhatPanel extends BorderLayoutPanel {
         return whatPanel;
     }
 
-    boolean isAny() { return
-            chartInfoCheckBox.isSelected()
-            || valuesCheckBox.isSelected()
-            || templatesCheckBox.isSelected()
-            || manifestsCheckBox.isSelected()
-            || hooksCheckBox.isSelected()
-            || notesCheckBox.isSelected();
+    boolean isAny() {
+        return
+                chartInfoCheckBox.isSelected()
+                        || valuesCheckBox.isSelected()
+                        || templatesCheckBox.isSelected()
+                        || manifestsCheckBox.isSelected()
+                        || hooksCheckBox.isSelected()
+                        || notesCheckBox.isSelected();
     }
 
-    boolean isAll() { return allCheckBox.isSelected(); }
-    boolean isChartInfo() { return allCheckBox.isSelected() || chartInfoCheckBox.isSelected(); }
-    boolean isValues() { return allCheckBox.isSelected() || valuesCheckBox.isSelected(); }
-    boolean isTemplates() { return allCheckBox.isSelected() || templatesCheckBox.isSelected(); }
-    boolean isManifests() { return allCheckBox.isSelected() || manifestsCheckBox.isSelected(); }
-    boolean isHooks() { return allCheckBox.isSelected() || hooksCheckBox.isSelected(); }
-    boolean isNotes() { return allCheckBox.isSelected() || notesCheckBox.isSelected(); }
+    boolean isAll() {
+        return allCheckBox.isSelected();
+    }
+
+    boolean isChartInfo() {
+        return allCheckBox.isSelected() || chartInfoCheckBox.isSelected();
+    }
+
+    boolean isValues() {
+        return allCheckBox.isSelected() || valuesCheckBox.isSelected();
+    }
+
+    boolean isTemplates() {
+        return allCheckBox.isSelected() || templatesCheckBox.isSelected();
+    }
+
+    boolean isManifests() {
+        return allCheckBox.isSelected() || manifestsCheckBox.isSelected();
+    }
+
+    boolean isHooks() {
+        return allCheckBox.isSelected() || hooksCheckBox.isSelected();
+    }
+
+    boolean isNotes() {
+        return allCheckBox.isSelected() || notesCheckBox.isSelected();
+    }
 }
