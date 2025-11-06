@@ -19,10 +19,12 @@
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
-    <depends>com.intellij.modules.platform</depends>
-    <depends>org.jetbrains.plugins.terminal</depends>
+    <dependencies>
+        <plugin id="com.intellij.modules.platform"/>
+        <plugin id="org.jetbrains.plugins.terminal"/>
+    </dependencies>
 
-<!--    <depends optional="true" config-file="sh-terminal.xml">org.jetbrains.plugins.terminal</depends>-->
+<!-- <depends optional="true" config-file="sh-terminal.xml">org.jetbrains.plugins.terminal</depends> -->
 
     <idea-version since-build="242"/>
 
